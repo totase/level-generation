@@ -14,6 +14,9 @@ public class SpelunkyGenerator : LevelManager
     [SerializeField] private GameObject _corridor;
     [SerializeField] private GameObject _uniform;
 
+    [Space]
+    [SerializeField] private GameObject _sideRoom;
+
     [Header("Room properties")]
     [SerializeField] private int _roomHeight = 6;
     [SerializeField] private int _roomWidth = 8;
@@ -223,7 +226,7 @@ public class SpelunkyGenerator : LevelManager
                 _toInstantiate = GetRoomType(_lastPos, _currentPos, _targetPos);
             }
 
-            GenerateRoom(_toInstantiate, _currentPos);
+            GeneratePathRoom(_toInstantiate, _currentPos);
 
             _lastPos = _currentPos;
             _currentPos = _targetPos;
@@ -233,14 +236,23 @@ public class SpelunkyGenerator : LevelManager
     }
 
     /// <summary>
-    /// Instantiates a room at a given position, and sets the level holder as its parent.
+    /// Instantiates a path room at a given position, and sets the level holder as its parent.
     /// </summary>
-    void GenerateRoom(GameObject room, Vector3 pos)
+    void GeneratePathRoom(GameObject room, Vector3 pos)
     {
         GameObject _currentRoom;
         RemoveFromPositions(pos);
 
         _currentRoom = Instantiate(room, pos, Quaternion.identity);
+        _currentRoom.transform.SetParent(_levelHolder);
+    }
+
+    /// <summary>
+    /// Instantiates a side room at a given position, and sets the level holder as its parent.
+    /// </summary>
+    void GenerateRoomSideRoom(GameObject room, Vector3 pos)
+    {
+        GameObject _currentRoom = Instantiate(room, pos, Quaternion.identity);
         _currentRoom.transform.SetParent(_levelHolder);
     }
 
@@ -268,7 +280,11 @@ public class SpelunkyGenerator : LevelManager
     /// </summary>
     void FinishSetup()
     {
-        // Add side rooms
+        for (int i = 0; i < _gridPositions.Count; i++)
+        {
+            Vector3 _sideRoomPos = _gridPositions[i];
+            GenerateRoomSideRoom(_sideRoom, _sideRoomPos);
+        }
 
         GameManager.instance.FinishSetup();
     }

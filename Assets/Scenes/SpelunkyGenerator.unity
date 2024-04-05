@@ -264,6 +264,7 @@ MonoBehaviour:
   _bottom: {fileID: 4723634309860518640, guid: f055d9eef1e3c448dbfe42cad398e62c, type: 3}
   _corridor: {fileID: 7721150462274999921, guid: 9327ded44a8e34bfcb67412d82f9a9d5, type: 3}
   _uniform: {fileID: 6758188752167749192, guid: 622edace8ceb749f181e2e17119b1652, type: 3}
+  _sideRoom: {fileID: 7477372060765862926, guid: 946554ea345a24561a774b91225ca429, type: 3}
   _roomHeight: 6
   _roomWidth: 8
   _rows: 3
