@@ -10,10 +10,10 @@ For each room, a new direction will be given (left, right or down). If the curre
 
 ### Rooms
 
-The position for each room will be calculated by the `roomHeight` and `roomWidth` variables. Ideally these would be set in the room prefabs, for example via a `RoomManager` script.
+The position for each room will be calculated by the `roomHeight` and `roomWidth` variables. Ideally, these would be set in the room prefabs, for example via a `RoomManager` script.
 
-Note: Since the rooms in this repository is static sprites, editing these variables will produce gaps between each rooms.
+Note: Since the rooms in this repository are static sprites, editing these variables will produce gaps between the rooms.
 
 ## Demo
 
-In the demo below, level are generated on a 3x3 grid, with 6x8 rooms.
+In the demo below, levels are generated on a 3x3 grid, with 6x8 rooms.
