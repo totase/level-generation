@@ -118,6 +118,9 @@ public class DrunkardsWalk : LevelManager
 
     public override void SetupScene()
     {
+        // Create a new level holder to keep hierarchy organized
+        _levelHolder = new GameObject("Level").transform;
+
         GenerateLevel();
     }
 
