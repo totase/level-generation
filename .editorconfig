@@ -1,0 +1,51 @@
+root = true
+
+[*.cs]
+
+# Indentation and spacing
+indent_size = 2
+indent_style = space
+tab_width = 2
+
+# New line preferences
+end_of_line = lf
+insert_final_newline = true
+
+# Organize usings
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = false
+
+# Naming rules
+dotnet_naming_rule.private_members_should_be_camel_case.severity = warning
+dotnet_naming_rule.private_members_should_be_camel_case.symbols = private_fields
+dotnet_naming_rule.private_members_should_be_camel_case.style = camel_case
+
+dotnet_naming_rule.constants_should_be_uppercase.severity = warning
+dotnet_naming_rule.constants_should_be_uppercase.symbols = constants
+dotnet_naming_rule.constants_should_be_uppercase.style = uppercase
+
+# Symbols
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = 
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.applicable_accessibilities = *
+dotnet_naming_symbols.constants.required_modifiers = const
+
+# Styles
+dotnet_naming_style.camel_case.capitalization = camel_case
+dotnet_naming_style.camel_case.required_prefix = _
+
+dotnet_naming_style.uppercase.capitalization = all_upper
+
+# Formatting rules
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_preserve_single_line_statements = true
+
+# Code quality rules
+dotnet_diagnostic.CA1822.severity = warning
+dotnet_diagnostic.CA2000.severity = error
+# Unused variables rule
+dotnet_diagnostic.CS0168.severity = warning
