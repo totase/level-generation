@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// Procedurally generates rooms in a grid-based layout with connecting corridors.
+/// Supports main path rooms and optional side rooms.
+/// </summary>
 public class RoomGenerator : LevelManager
 {
   /// <summary>
@@ -60,6 +64,10 @@ public class RoomGenerator : LevelManager
     }
   }
 
+  /// <summary>
+  /// Creates a new room in a random direction from the current position.
+  /// May also generate an optional side room.
+  /// </summary>
   public void GenerateRoom()
   {
     _direction = GetRandomDirection();
@@ -108,6 +116,9 @@ public class RoomGenerator : LevelManager
     }
   }
 
+  /// <summary>
+  /// Places floor and wall tiles for a room and adds doors between connected rooms.
+  /// </summary>
   void PlaceRoomTiles(RoomManager previousRoom, RoomManager newRoom)
   {
     for (int x = newRoom.X - 1; x < newRoom.X + newRoom.Width + 1; x++)
@@ -135,6 +146,9 @@ public class RoomGenerator : LevelManager
     Instantiate(_floorTile, position, Quaternion.identity);
   }
 
+  /// <summary>
+  /// Creates a room at the specified position, handling direction logic and room spacing.
+  /// </summary>
   RoomManager CreateRoomAtPosition(int x, int y, int roomWidth, int roomHeight, bool isSideRoom = false)
   {
     switch (_direction)
@@ -228,6 +242,9 @@ public class RoomGenerator : LevelManager
     return AddRoom(x, y, roomWidth, roomHeight);
   }
 
+  /// <summary>
+  /// Creates a door connection between two adjacent rooms.
+  /// </summary>
   void AddDoorBetweenRooms(RoomManager previousRoom, RoomManager newRoom)
   {
     Vector3Int _previousRoomCenter = previousRoom.GetCenter();
@@ -255,9 +272,13 @@ public class RoomGenerator : LevelManager
     Vector3Int _doorPosition = new Vector3Int(_posX, _posY, 0);
 
     InstantiateFloorTile(_doorPosition);
+
     // Place door object
   }
 
+  /// <summary>
+  /// Instantiates and initializes a new room with the specified dimensions.
+  /// </summary>
   public RoomManager AddRoom(int x, int y, int roomWidth, int roomHeight)
   {
     Vector3 _instantiatePosition = new Vector3(x + roomWidth / 2, y + roomHeight / 2, 0);
@@ -291,6 +312,10 @@ public class RoomGenerator : LevelManager
     // Instantiate exit in the last room
   }
 
+  /// <summary>
+  /// Returns a random cardinal direction with weighted probabilities.
+  /// Left/Right are more common than Down.
+  /// </summary>
   Direction GetRandomDirection()
   {
     int _random = Random.Range(1, 6);
