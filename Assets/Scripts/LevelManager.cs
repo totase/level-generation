@@ -5,5 +5,5 @@ using UnityEngine;
 /// </summary>
 public abstract class LevelManager : MonoBehaviour
 {
-    public abstract void SetupScene();
+  public abstract void SetupScene();
 }
