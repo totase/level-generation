@@ -14,7 +14,8 @@ public class RoomGenerator : LevelManager
   }
 
   // Start level generation in the center of the grid
-  int _x, _y = 0;
+  private int _x = 0;
+  private int _y = 0;
 
   private int _duplicateDirection = 0;
   private bool _didCreateSideRoom = false;
@@ -38,10 +39,13 @@ public class RoomGenerator : LevelManager
   private List<RoomManager> _rooms;
 
   /// <summary>
-  /// Generates a random level based on the room count and room size
+  /// Generates a random level based on the room count and room size.
   /// </summary>
   void GenerateLevel()
   {
+    // Initialize the rooms list
+    _rooms = new List<RoomManager>();
+
     // Generate start room
     RoomManager _startRoom = AddRoom(_x, _y, _roomWidth, _roomHeight);
 
@@ -104,7 +108,6 @@ public class RoomGenerator : LevelManager
     }
   }
 
-
   void PlaceRoomTiles(RoomManager previousRoom, RoomManager newRoom)
   {
     for (int x = newRoom.X - 1; x < newRoom.X + newRoom.Width + 1; x++)
@@ -132,7 +135,6 @@ public class RoomGenerator : LevelManager
     Instantiate(_floorTile, position, Quaternion.identity);
   }
 
-
   RoomManager CreateRoomAtPosition(int x, int y, int roomWidth, int roomHeight, bool isSideRoom = false)
   {
     switch (_direction)
@@ -152,7 +154,6 @@ public class RoomGenerator : LevelManager
         {
           y -= roomHeight + 1;
           _previousDirection = Direction.Down;
-
           _duplicateDirection = 0;
         }
         else
@@ -162,6 +163,7 @@ public class RoomGenerator : LevelManager
         }
 
         break;
+
       case Direction.Right:
         if (isSideRoom)
         {
@@ -177,7 +179,6 @@ public class RoomGenerator : LevelManager
         {
           y -= roomHeight + 1;
           _previousDirection = Direction.Down;
-
           _duplicateDirection = 0;
         }
         else
@@ -187,6 +188,7 @@ public class RoomGenerator : LevelManager
         }
 
         break;
+
       case Direction.Down:
         if (isSideRoom)
         {
@@ -259,9 +261,11 @@ public class RoomGenerator : LevelManager
   public RoomManager AddRoom(int x, int y, int roomWidth, int roomHeight)
   {
     Vector3 _instantiatePosition = new Vector3(x + roomWidth / 2, y + roomHeight / 2, 0);
-    RoomManager _toInsantiate = Instantiate(_room, _instantiatePosition, Quaternion.identity).GetComponent<RoomManager>();
+    RoomManager _toInstantiate = Instantiate(_room, _instantiatePosition, Quaternion.identity).GetComponent<RoomManager>();
 
-    return _toInsantiate;
+    _toInstantiate.SetRoomProperties(x, y, roomWidth, roomHeight);
+
+    return _toInstantiate;
   }
 
   public void RemoveRoom(RoomManager room)
@@ -276,6 +280,15 @@ public class RoomGenerator : LevelManager
     _rooms = new List<RoomManager>();
 
     GenerateLevel();
+
+    RoomManager _startRoom = _rooms[0];
+    RoomManager _endRoom = _rooms[_rooms.Count - 1];
+    // If this _endRoom is a side room, use the second to last room in the list
+    if (_endRoom.SideRoom) _endRoom = _rooms[_rooms.Count - 2];
+
+    // Instantiate player in the first room
+
+    // Instantiate exit in the last room
   }
 
   Direction GetRandomDirection()
