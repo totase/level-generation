@@ -69,11 +69,13 @@ public class FloorGenerator : LevelManager
       {
         Vector3Int _position = new Vector3Int(x, y, 0);
 
-        _floorPositions.Add(_position);
-
         if (x == -1 || x == _floorWidth || y == -1 || y == _floorHeight)
         {
           InstantiateTile(_position, _wallTile, gameObject);
+        }
+        else
+        {
+          _floorPositions.Add(_position);
         }
       }
     }
@@ -138,6 +140,12 @@ public class FloorGenerator : LevelManager
     foreach (RoomManager _room in _rooms)
     {
       PlaceRoomTiles(_room);
+    }
+
+    // Fill the remaining floor positions with floor tiles
+    foreach (Vector3Int _position in _floorPositions)
+    {
+      InstantiateTile(_position, _floorTile, gameObject);
     }
   }
 
@@ -255,11 +263,43 @@ public class FloorGenerator : LevelManager
         Vector3Int _position = new Vector3Int(x, y, 0);
         if (x == room.X - 1 || x == room.X + room.Width || y == room.Y - 1 || y == room.Y + room.Height)
         {
-          InstantiateTile(_position, _wallTile, room.gameObject);
+          // InstantiateTile(_position, _wallTile, room.gameObject);
         }
         else InstantiateTile(_position, _floorTile, room.gameObject);
+
+        _floorPositions.Remove(_position);
       }
     }
+
+    Vector3Int _doorPosition = new Vector3Int(room.X + 1, room.GetCenter().y, 0);
+    bool _topHit = false, _leftHit = false, _bottomHit = false, _rightHit = false;
+
+    // Add door to the room, but make sure the door is not placed on a floor border tile
+    if (room.X - 1 == -1) _leftHit = true;
+    if (room.X + room.Width == _floorWidth) _rightHit = true;
+    if (room.Y - 1 == -1) _bottomHit = true;
+    if (room.Y + room.Height == _floorHeight) _topHit = true;
+
+    int _random = Random.Range(0, 3);
+
+    if (_topHit && _rightHit || _topHit && _leftHit) _doorPosition.y = room.Y - 1;
+    else if (_bottomHit && _leftHit || _bottomHit && _rightHit) _doorPosition.y = room.Y + room.Height;
+    else if (_leftHit) _doorPosition.x = room.X + room.Width;
+    else if (_rightHit) _doorPosition.x = room.X - 1;
+    else if (_topHit)
+    {
+      if (_random == 0) _doorPosition.x = room.X + room.Width;
+      else if (_random == 1) _doorPosition.x = room.X - 1;
+      else _doorPosition.y = _doorPosition.y = room.Y - 1;
+    }
+    else if (_bottomHit)
+    {
+      if (_random == 0) _doorPosition.x = room.X + room.Width;
+      else if (_random == 1) _doorPosition.x = room.X - 1;
+      else _doorPosition.y = _doorPosition.y = room.Y + room.Height;
+    }
+
+    InstantiateTile(_doorPosition, _floorTile, room.gameObject);
   }
 
   void InstantiateTile(Vector3Int position, GameObject tile, GameObject room)
