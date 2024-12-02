@@ -16,6 +16,10 @@ A level generator using a random walk algorithm, inspired by [this algorithm](ht
 
 Procedurally generates rooms in a grid-based layout with connecting corridors. It generates rooms in random directions based on the input sizes and supports main path rooms and optional side rooms.
 
+### [Floor generator](./Assets/Scripts/FloorGenerator/)
+
+Generates a floor with a room in each corner and additional rooms between them, connected with doors and a hallway.
+
 ### Unity version
 
 Project was made with Unity version 2022.3.22f1
