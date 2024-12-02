@@ -17,9 +17,6 @@ public class FloorGenerator : LevelManager
     Right
   }
 
-  // Start level generation in the center of the grid
-  private int _x, _y = 0;
-
   [Header("Floor properties")]
   [SerializeField] private int _floorWidth;
   [SerializeField] private int _floorHeight;
@@ -29,6 +26,12 @@ public class FloorGenerator : LevelManager
   // Each floor will at least have 4 rooms - one in each corner.
   [SerializeField] private int _roomCount;
   [SerializeField] private GameObject _room;
+
+  // Should only expand a room to fill horizontal gap once. Track that here.
+  private bool _didExpandRoom = false;
+
+  Direction _previoudDirection;
+  int _maxAttempts;
 
   [Space]
   [SerializeField] private int _minWidth;
@@ -46,8 +49,9 @@ public class FloorGenerator : LevelManager
 
   public override void SetupScene()
   {
-    _rooms = new List<RoomManager>();
+    _maxAttempts = _roomCount * 2;
 
+    _rooms = new List<RoomManager>();
     _floorPositions = new List<Vector3Int>();
 
     GenerateLevel();
@@ -101,6 +105,35 @@ public class FloorGenerator : LevelManager
     AdjustHorizontalGapBetweenRooms(_topLeft, _topRight);
     AdjustHorizontalGapBetweenRooms(_bottomLeft, _bottomRight);
 
+    for (int i = 0; i < _roomCount && i < _maxAttempts;)
+    {
+      Direction _direction = GetRandomDirection();
+
+      if (_previoudDirection == _direction) continue;
+      else _previoudDirection = _direction;
+
+      bool _roomCreated = false;
+
+      switch (_direction)
+      {
+        case Direction.Top:
+          _roomCreated = CreateVerticalRoomBetweenRooms(_topLeft, _topRight);
+          break;
+        case Direction.Left:
+          _roomCreated = CreateHorizontalRoomBetweenRooms(_bottomLeft, _topLeft);
+          break;
+        case Direction.Down:
+          _roomCreated = CreateVerticalRoomBetweenRooms(_bottomLeft, _bottomRight);
+          break;
+        case Direction.Right:
+          _roomCreated = CreateHorizontalRoomBetweenRooms(_bottomRight, _topRight);
+          break;
+      }
+
+      if (_roomCreated) i++;
+      else _maxAttempts++;
+    }
+
     // Place tiles for each room
     foreach (RoomManager _room in _rooms)
     {
@@ -119,11 +152,67 @@ public class FloorGenerator : LevelManager
     if (_floorWidth - (room.Width + nextRoom.Width) <= gap)
     {
       // Reduce room size
-      if (Random.Range(0, 2) == 0) room.Width = room.Width - 2;
-      // Expand room to fill the gap
-      else room.Width = _floorWidth - nextRoom.Width - 1;
+      if (Random.Range(0, 2) == 0 || _didExpandRoom) room.Width = room.Width - 2;
+      else
+      {
+        // Expand room to fill the gap
+        room.Width = _floorWidth - nextRoom.Width - 1;
 
+        _didExpandRoom = true;
+      }
     }
+  }
+
+  /// <summary>
+  /// Creates a room between two vertically aligned rooms.
+  /// 
+  /// Returns True if a room was created, False otherwise.
+  /// </summary>
+  bool CreateVerticalRoomBetweenRooms(RoomManager room, RoomManager nextRoom)
+  {
+    // Subtract an additional 2 to account for the adjacent wall tiles
+    int _spaceBetweenRooms = _floorWidth - (room.Width + nextRoom.Width) - 2;
+
+    if (_spaceBetweenRooms >= 2)
+    {
+      int _roomX = room.X + room.Width + 1;
+      int _roomY = room.Y;
+
+      RoomManager _newRoom = AddRoom(_roomX, _roomY, _spaceBetweenRooms, room.Height);
+
+      _rooms.Add(_newRoom);
+
+      return true;
+    }
+
+    return false;
+  }
+
+  /// <summary>
+  /// Creates a room between two horizontally aligned rooms.
+  /// 
+  /// Returns True if a room was created, False otherwise.
+  /// </summary>
+  bool CreateHorizontalRoomBetweenRooms(RoomManager room, RoomManager nextRoom)
+  {
+    // Subtract an additional 2 to account for the adjacent wall tiles
+    int _spaceBetweenRooms = _floorHeight - (room.Height + nextRoom.Height) - 2;
+
+    if (_spaceBetweenRooms >= 2)
+    {
+      int _roomX = room.X;
+      int _roomY = room.Y + room.Height + 1;
+
+      int _roomWidth = room.Width < nextRoom.Width ? room.Width : nextRoom.Width;
+
+      RoomManager _newRoom = AddRoom(_roomX, _roomY, _roomWidth, _spaceBetweenRooms);
+
+      _rooms.Add(_newRoom);
+
+      return true;
+    }
+
+    return false;
   }
 
   List<Vector3Int> GetFloorCorners()
