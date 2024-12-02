@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-
+/// Generates a floor with a room in each corner and additional rooms between them,
+/// connected with doors and a hallway.
 /// </summary>
 public class FloorGenerator : LevelManager
 {
