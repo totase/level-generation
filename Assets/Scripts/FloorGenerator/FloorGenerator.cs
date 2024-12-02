@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -7,7 +6,6 @@ using UnityEngine;
 /// </summary>
 public class FloorGenerator : LevelManager
 {
-
   /// <summary>
   /// Enum representing floor edges.
   /// </summary>
@@ -93,12 +91,13 @@ public class FloorGenerator : LevelManager
       _rooms.Add(_newRoom);
     }
 
-    // If there's only three or less (one floor position + two walls) spaces between rooms, expand the room to fill the space
     RoomManager _topLeft = _rooms[0];
     RoomManager _topRight = _rooms[1];
     RoomManager _bottomRight = _rooms[2];
     RoomManager _bottomLeft = _rooms[3];
 
+    // If there's only three or less (one floor position + two walls) spaces between rooms, 
+    // expand the room to fill the space or reduce the room size.
     AdjustHorizontalGapBetweenRooms(_topLeft, _topRight);
     AdjustVerticalGapBetweenRooms(_topLeft, _bottomLeft);
     AdjustHorizontalGapBetweenRooms(_bottomLeft, _bottomRight);
@@ -111,21 +110,38 @@ public class FloorGenerator : LevelManager
     }
   }
 
+  /// <summary>
+  /// Adjusts the horizontal gap between rooms to ensure there's enough space between them.
+  /// The function will either expand the room to fill the gap or reduce the room size.
+  ///
+  /// The minimum gap between rooms is 3 (two wall tiles and a floor tile).
+  /// </summary>
   void AdjustHorizontalGapBetweenRooms(RoomManager room, RoomManager nextRoom, int gap = 3)
   {
     if (_floorWidth - (room.Width + nextRoom.Width) <= gap)
     {
+      // Reduce room size
+      if (Random.Range(0, 2) == 0) room.Width = room.Width - 2;
       // Expand room to fill the gap
-      room.Width = _floorWidth - nextRoom.Width - 1;
+      else room.Width = _floorWidth - nextRoom.Width - 1;
+
     }
   }
 
+  /// <summary>
+  /// Adjusts the vertical gap between rooms to ensure there's enough space between them.
+  /// The function will either expand the room to fill the gap or reduce the room size.
+  /// 
+  /// The minimum gap between rooms is 3 (two wall tiles and a floor tile).
+  /// </summary>
   void AdjustVerticalGapBetweenRooms(RoomManager room, RoomManager nextRoom, int gap = 3)
   {
     if (_floorHeight - (room.Height + nextRoom.Height) <= gap)
     {
+      // Reduce room size
+      if (Random.Range(0, 2) == 0) room.Height = room.Height - 2;
       // Expand room to fill the gap
-      room.Height = _floorHeight - nextRoom.Height - 1;
+      else room.Height = _floorHeight - nextRoom.Height - 1;
     }
   }
 
@@ -133,6 +149,7 @@ public class FloorGenerator : LevelManager
   {
     List<Vector3Int> _corners = new List<Vector3Int>
     {
+      // Floor corners in the following order:
       // Top left, top right, bottom left, bottom right
       new Vector3Int(0, _floorHeight - 1, 0),
       new Vector3Int(_floorWidth - 1, _floorHeight - 1, 0),
@@ -202,18 +219,6 @@ public class FloorGenerator : LevelManager
       default:
         Debug.LogError("Direction not found: " + _random);
         return 0;
-    }
-  }
-
-  void OnDrawGizmos()
-  {
-    Gizmos.color = Color.gray;
-
-    if (_floorPositions == null) return;
-
-    foreach (Vector3Int _position in _floorPositions)
-    {
-      Gizmos.DrawWireCube(_position, Vector3.one);
     }
   }
 }
