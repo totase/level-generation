@@ -99,9 +99,7 @@ public class FloorGenerator : LevelManager
     // If there's only three or less (one floor position + two walls) spaces between rooms, 
     // expand the room to fill the space or reduce the room size.
     AdjustHorizontalGapBetweenRooms(_topLeft, _topRight);
-    AdjustVerticalGapBetweenRooms(_topLeft, _bottomLeft);
     AdjustHorizontalGapBetweenRooms(_bottomLeft, _bottomRight);
-    AdjustVerticalGapBetweenRooms(_topRight, _bottomRight);
 
     // Place tiles for each room
     foreach (RoomManager _room in _rooms)
@@ -125,23 +123,6 @@ public class FloorGenerator : LevelManager
       // Expand room to fill the gap
       else room.Width = _floorWidth - nextRoom.Width - 1;
 
-    }
-  }
-
-  /// <summary>
-  /// Adjusts the vertical gap between rooms to ensure there's enough space between them.
-  /// The function will either expand the room to fill the gap or reduce the room size.
-  /// 
-  /// The minimum gap between rooms is 3 (two wall tiles and a floor tile).
-  /// </summary>
-  void AdjustVerticalGapBetweenRooms(RoomManager room, RoomManager nextRoom, int gap = 3)
-  {
-    if (_floorHeight - (room.Height + nextRoom.Height) <= gap)
-    {
-      // Reduce room size
-      if (Random.Range(0, 2) == 0) room.Height = room.Height - 2;
-      // Expand room to fill the gap
-      else room.Height = _floorHeight - nextRoom.Height - 1;
     }
   }
 
