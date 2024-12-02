@@ -68,9 +68,9 @@
     <Compile Include="Assets/Scripts/RoomGenerator/RoomGenerator.cs" />
     <Compile Include="Assets/Scripts/FloorGenerator/FloorGenerator.cs" />
     <Compile Include="Assets/Scripts/DrunkardsWalk/DrunkardsWalk.cs" />
-    <Compile Include="Assets/Scripts/LevelManager.cs" />
-    <Compile Include="Assets/Scripts/GameManager.cs" />
-    <Compile Include="Assets/Scripts/RoomGenerator/RoomManager.cs" />
+    <Compile Include="Assets/Scripts/Shared/RoomManager.cs" />
+    <Compile Include="Assets/Scripts/Shared/LevelManager.cs" />
+    <Compile Include="Assets/Scripts/Shared/GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
